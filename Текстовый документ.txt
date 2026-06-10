@@ -1,0 +1,81 @@
+Собран production-ready scaffold Telegram-бота для изучения английского. Ниже — что уже есть и что нужно от вас.
+
+Что создано
+Инфраструктура
+NestJS + TypeScript — модульная архитектура с DI
+Prisma — 17 сущностей (все из ТЗ)
+SQL-миграция — prisma/migrations/20250610000000_init/
+Docker Compose — PostgreSQL + приложение
+Swagger — http://localhost:3000/docs
+JWT Auth — внутренний REST API
+Модули (src/modules/)
+Модуль	Назначение
+telegram
+Бот, онбординг, меню, обработчики
+ai
+Gemini: генерация, оценка, фидбек
+voice
+VoiceProcessingService (download → convert → STT → analyze)
+vocabulary
+Слова, тесты, SRS
+grammar
+Задания с порогом 70
+speaking
+Голосовые ответы, оценка 0–100
+listening
+Аудио + 3 режима проверки
+progress
+Прогресс, level-up
+statistics
+Streak, рейтинг, достижения
+notifications
+Daily challenge, cron-напоминания
+Документация
+README.md — быстрый старт
+docs/DEVELOPMENT_PLAN.md — план по 9 этапам
+docs/ENTITY_DIAGRAM.md — UML (Mermaid)
+docs/PROMPTS.md — 10 промптов Gemini
+Что нужно от вас
+1. Обязательно
+Что	Где взять	Куда
+Telegram Bot Token
+@BotFather → /newbot
+.env → TELEGRAM_BOT_TOKEN
+Gemini API Key
+Google AI Studio
+.env → GEMINI_API_KEY
+JWT Secret
+Любая длинная случайная строка
+.env → JWT_SECRET
+2. Системные зависимости
+Node.js 20+
+FFmpeg — для конвертации OGG → WAV
+Windows: winget install ffmpeg или скачать с ffmpeg.org
+Docker Desktop — для PostgreSQL
+3. Запуск
+cd d:\cursor_projects\english_speak_bot
+copy .env.example .env
+# Заполнить TELEGRAM_BOT_TOKEN и GEMINI_API_KEY
+npm install
+docker compose up postgres -d
+npm run prisma:generate
+npm run prisma:migrate:deploy
+npm run db:seed
+npm run start:dev
+После запуска откройте бота в Telegram и отправьте /start.
+
+Что ещё доработать (следующие этапы)
+Scaffold готов к развитию, но для полного production понадобится:
+
+STT/TTS — сейчас через Gemini; для production лучше Google Cloud Speech или Whisper
+Webhook вместо long polling для Telegram
+E2E-тесты сценариев бота
+Redis — для FSM-состояний при масштабировании
+Reading / Writing — режимы заложены в schema, логика — в этапе 9 плана
+Архитектура (кратко)
+Telegram → Handlers → Domain Services → AiModule (Gemini)
+                    → VoiceModule (FFmpeg + STT)
+                    → Prisma → PostgreSQL
+Пороги прохождения: Speaking/Grammar/Listening/Vocabulary — 70 баллов. Повышение уровня — 10 заданий со средним ≥ 80.
+
+Если нужно — могу помочь с первым запуском, настройкой .env или реализацией конкретного этапа (например, webhook или E2E-тесты).
