@@ -39,8 +39,8 @@ export class ListeningService {
     const level = await this.usersService.getSkillLevel(userId, SkillType.LISTENING);
     const exercise = await this.aiTaskGenerator.generateListeningTask(level, mode);
 
-    const audioPath = path.join('./tmp/audio', `listening_${userId}_${Date.now()}.ogg`);
-    await this.filesService.generateAudioFromText(exercise.text, audioPath);
+    const basePath = path.join('./tmp/audio', `listening_${userId}_${Date.now()}.mp3`);
+    const audioPath = await this.filesService.generateAudioFromText(exercise.text, basePath);
 
     const task = await this.tasksService.create(userId, {
       type: this.mapModeToTaskType(mode),

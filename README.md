@@ -1,13 +1,13 @@
 # English Speak Bot
 
-Production-ready Telegram-бот для изучения английского языка с ИИ-преподавателем на базе NestJS, PostgreSQL, Prisma и Google Gemini.
+Production-ready Telegram-бот для изучения английского языка с ИИ-преподавателем на базе NestJS, PostgreSQL, Prisma, DeepSeek, faster-whisper и Edge TTS.
 
 ## Возможности
 
 - Онбординг с определением уровня по 6 навыкам (CEFR)
-- Персональный учебный план (генерируется Gemini)
+- Персональный учебный план (DeepSeek)
 - Режимы: Vocabulary, Grammar, Speaking, Listening
-- Проверка ответов через Gemini (строгий JSON)
+- Проверка ответов через DeepSeek (строгий JSON)
 - Голосовые сообщения: OGG → WAV → STT → анализ
 - Система прогресса, статистики, достижений
 - Интервальное повторение слов (SRS)
@@ -22,9 +22,11 @@ Production-ready Telegram-бот для изучения английского 
 
 - Node.js 20+
 - PostgreSQL — локально **или** бесплатно в [Neon](https://neon.tech) / [Supabase](https://supabase.com)
-- FFmpeg (для голосовых сообщений)
+- FFmpeg (для конвертации голоса OGG→WAV)
+- Python 3.10+ (audio-server: whisper + edge-tts)
+- NVIDIA GPU с CUDA (рекомендуется для STT, RTX 3050 6GB достаточно)
 - Telegram Bot Token ([@BotFather](https://t.me/BotFather))
-- Google Gemini API Key ([Google AI Studio](https://aistudio.google.com/))
+- DeepSeek API Key ([platform.deepseek.com](https://platform.deepseek.com))
 
 ### Установка
 
@@ -33,7 +35,8 @@ cd d:\cursor_projects\english_speak_bot
 
 npm install
 copy .env.example .env
-# Заполнить: DATABASE_URL, TELEGRAM_BOT_TOKEN, GEMINI_API_KEY
+# Заполнить: DATABASE_URL, TELEGRAM_BOT_TOKEN, AI_API_KEY
+# Запустить audio-server: services\audio-server\start.bat
 
 npm run prisma:generate
 npm run prisma:migrate:deploy
@@ -79,6 +82,7 @@ src/
 
 ## Документация
 
+- [Установка AI-стека](docs/SETUP_AI_STACK.md)
 - [План разработки](docs/DEVELOPMENT_PLAN.md)
 - [UML диаграмма сущностей](docs/ENTITY_DIAGRAM.md)
 - [Промпты Gemini](docs/PROMPTS.md)

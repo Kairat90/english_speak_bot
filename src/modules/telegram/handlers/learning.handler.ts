@@ -64,7 +64,11 @@ export class LearningHandler {
     const { message, audioPath } = await this.listeningService.startExercise(userId, mode);
 
     if (fs.existsSync(audioPath)) {
-      await ctx.replyWithVoice({ source: audioPath });
+      if (audioPath.endsWith('.mp3')) {
+        await ctx.replyWithAudio({ source: audioPath });
+      } else {
+        await ctx.replyWithVoice({ source: audioPath });
+      }
     }
 
     await ctx.reply(message);

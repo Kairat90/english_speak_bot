@@ -201,8 +201,8 @@ export class VocabularyService {
 
   async generateWordAudio(wordId: string): Promise<string> {
     const word = await this.prisma.vocabularyWord.findUniqueOrThrow({ where: { id: wordId } });
-    const audioPath = path.join('./tmp/audio', `${wordId}.ogg`);
-    return this.filesService.generateAudioFromText(word.word, audioPath);
+    const basePath = path.join('./tmp/audio', `${wordId}.mp3`);
+    return this.filesService.generateAudioFromText(word.word, basePath);
   }
 
   private formatWordMessage(

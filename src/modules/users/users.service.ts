@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { SkillType, CEFRLevel, OnboardingStep } from '@prisma/client';
 import { CreateUserDto, UpdateUserProfileDto, UpdateSkillLevelDto } from './dto/create-user.dto';
 import { AiTaskGeneratorService } from '../ai/services/ai-task-generator.service';
-import { GeminiApiError } from '../../common/errors/gemini-api.error';
+import { AiApiError } from '../../common/errors/ai-api.error';
 import { buildDefaultLearningPlan } from '../../common/utils/default-learning-plan.util';
 
 const ALL_SKILLS: SkillType[] = [
@@ -180,7 +180,7 @@ export class UsersService {
     try {
       plan = await this.aiTaskGenerator.generateLearningPlan(profile);
     } catch (error) {
-      if (GeminiApiError.isRetryable(error)) {
+      if (AiApiError.isRetryable(error)) {
         plan = buildDefaultLearningPlan(profile);
       } else {
         throw error;

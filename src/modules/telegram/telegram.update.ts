@@ -7,7 +7,7 @@ import { MenuHandler } from './handlers/menu.handler';
 import { LearningHandler } from './handlers/learning.handler';
 import { mainMenuKeyboard, MENU_MAP } from './keyboards/main.keyboard';
 import { formatDbErrorMessage } from '../../common/utils/db-error.util';
-import { GeminiApiError } from '../../common/errors/gemini-api.error';
+import { AiApiError } from '../../common/errors/ai-api.error';
 import { safeReply } from '../../common/utils/telegram-reply.util';
 
 @Update()
@@ -66,7 +66,18 @@ export class TelegramUpdate {
       await this.learningHandler.handleVoice(ctx, user.id, voice.file_id);
     } catch (error) {
       this.logger.error(`Voice processing error: ${(error as Error).message}`);
-      await this.replyError(ctx, error, '❌ Ошибка обработки голосового сообщения. Попробуйте ещё раз.');
+      const msg = (error as Error).message ?? '';
+      let hint = '❌ Ошибка обработки голосового сообщения.';
+
+      if (msg.includes('Whisper STT') || msg.includes('ECONNREFUSED')) {
+        hint +=
+          '\n\nПроверьте:\n' +
+          '1. Audio-server запущен: services\\audio-server\\start.bat\n' +
+          '2. ffmpeg установлен: winget install Gyan.FFmpeg\n' +
+          '3. http://127.0.0.1:8001/health открывается в браузере';
+      }
+
+      await this.replyError(ctx, error, hint);
     }
   }
 
@@ -119,8 +130,8 @@ export class TelegramUpdate {
 
   private async replyError(ctx: Context, error: unknown, fallback = '❌ Произошла ошибка. Попробуйте ещё раз.'): Promise<void> {
     try {
-      if (GeminiApiError.isRetryable(error)) {
-        await safeReply(ctx, GeminiApiError.fromUnknown(error).userMessage());
+      if (AiApiError.isRetryable(error) || AiApiError.isBalanceError(error)) {
+        await safeReply(ctx, AiApiError.fromUnknown(error).userMessage());
         return;
       }
 

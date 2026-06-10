@@ -16,9 +16,14 @@ yarn-error.log*
 .env.local
 .env.*.local
 
+# python audio-server
+services/audio-server/venv/
+services/audio-server/__pycache__/
+
 # temp
 /tmp
 *.tmp
+Текстовый документ.txt
 *.ogg
 *.wav
 

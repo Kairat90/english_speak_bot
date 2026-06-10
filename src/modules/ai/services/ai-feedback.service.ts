@@ -21,7 +21,7 @@ export class AiFeedbackService {
         promptType: params.promptType,
         request: params.request as never,
         response: params.response as never,
-        model: params.model ?? 'gemini-2.5-flash-lite',
+        model: params.model ?? 'deepseek-chat',
       },
     });
   }

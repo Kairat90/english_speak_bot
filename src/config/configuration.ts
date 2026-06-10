@@ -13,11 +13,16 @@ export default () => ({
     webhookSecret: process.env.TELEGRAM_WEBHOOK_SECRET,
   },
 
-  gemini: {
-    apiKey: process.env.GEMINI_API_KEY,
-    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash-lite',
-    fallbackModels: process.env.GEMINI_FALLBACK_MODELS || 'gemini-2.5-flash,gemini-2.0-flash',
-    ttsModel: process.env.GEMINI_TTS_MODEL || 'gemini-2.5-flash-lite',
+  ai: {
+    baseUrl: process.env.AI_BASE_URL || 'https://api.deepseek.com',
+    apiKey: process.env.AI_API_KEY || process.env.DEEPSEEK_API_KEY,
+    model: process.env.AI_MODEL || 'deepseek-chat',
+  },
+
+  audio: {
+    serverUrl: process.env.AUDIO_SERVER_URL || 'http://127.0.0.1:8001',
+    ttsVoice: process.env.TTS_VOICE || 'en-US-AriaNeural',
+    whisperModel: process.env.WHISPER_MODEL || 'small',
   },
 
   jwt: {
